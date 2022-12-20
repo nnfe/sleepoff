@@ -1,0 +1,60 @@
+#!/bin/bash
+
+start()
+{
+clear
+if
+    [ -z "$@" ] ;
+    then
+         input_time ;
+    else
+        echo "System is down through $@ seconds." ;
+        timeoff=$@ ;
+        timer ;
+fi
+}
+
+input_time()
+{
+    echo "Time to Off: " ;
+    read -e -t 10 off_time ;
+    test_time ;
+}
+
+test_time()
+{
+clear
+if [ -z "$off_time" ] ;
+    then
+    off_time=2400 ;
+    timeoff=$off_time ;
+    echo "Default shutdown time $off_time seconds" ;
+        shd ;
+    else
+    echo "You shutdown time $off_time seconds" ;
+    timeoff=$off_time ;
+    shd ;
+fi
+}
+
+timer()
+{
+    clear ;
+    timeoff=$(($timeoff-1)) ;
+    echo "System is down through $timeoff seconds." && sleep 1 ;
+    clear ;
+    shd ;
+}
+
+shd()
+{
+    if [ $timeoff == 0 ] ;
+    then
+##        sudo init 0 ;
+        sudo systemctl poweroff;
+    else
+    timer ;
+    fi
+}
+
+start $@
